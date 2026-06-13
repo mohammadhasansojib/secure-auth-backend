@@ -26,3 +26,14 @@ from
     refresh_tokens;
 ```
 
+
+## `@updatedAt` directive in `prisma`
+to update the updatedAt/updated_at field automatically when something modified, prisma gives @updatedAt directive to update automatically.
+
+example:
+```js
+model Post {
+  id        String   @id
+  updatedAt DateTime @updatedAt
+}
+```

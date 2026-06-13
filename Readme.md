@@ -137,3 +137,50 @@ create table email_verification_tokens (
 );
 ```
 </details>
+
+
+### ER Diagram
+```mermaid
+erDiagram
+
+    USERS {
+        SERIAL user_id PK
+        VARCHAR(30) username "NOT NULL"
+        VARCHAR(254) email "UNIQUE NOT NULL"
+        INT age "NOT NULL, CHECK (10 < age < 100)"
+        VARCHAR(255) password_hash "NOT NULL"
+        BOOLEAN is_verified "DEFAULT false"
+        VARCHAR(10) role "CHECK ('admin'|'user')"
+        TIMESTAMP created_at "DEFAULT now()"
+        TIMESTAMP updated_at "DEFAULT now()"
+    }
+
+    REFRESH_TOKENS {
+        SERIAL refresh_token_id PK
+        TEXT token_hash "NOT NULL"
+        TEXT session_id "UNIQUE NOT NULL"
+        INT user_id FK
+        TIMESTAMP expires_at "NOT NULL"
+        TIMESTAMP created_at "DEFAULT now()"
+    }
+
+    PASSWORD_RESET_TOKENS {
+        SERIAL reset_token_id PK
+        TEXT token_hash "NOT NULL"
+        INT user_id FK
+        TIMESTAMP expires_at "NOT NULL"
+        TIMESTAMP created_at "DEFAULT now()"
+    }
+
+    EMAIL_VERIFICATION_TOKENS {
+        SERIAL verification_token_id PK
+        TEXT token_hash "NOT NULL"
+        INT user_id FK
+        TIMESTAMP expires_at "NOT NULL"
+        TIMESTAMP created_at "DEFAULT now()"
+    }
+
+    USERS ||--o{ REFRESH_TOKENS : "has"
+    USERS ||--o{ PASSWORD_RESET_TOKENS : "has"
+    USERS ||--o{ EMAIL_VERIFICATION_TOKENS : "has"
+```

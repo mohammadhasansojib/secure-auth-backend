@@ -184,3 +184,79 @@ erDiagram
     USERS ||--o{ PASSWORD_RESET_TOKENS : "has"
     USERS ||--o{ EMAIL_VERIFICATION_TOKENS : "has"
 ```
+
+
+
+### Implementation with Prisma
+
+#### `User` schema
+```js
+model User {
+    user_id Int @id @default(autoincrement())
+    username @db.VarChar(30)
+    email @db.VarChar(254) @unique
+    age Int
+    password_hash Text
+    is_verified Boolean @default(false)
+    role Role @default(USER)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    refresh_tokens refresh_tokens[]
+    password_reset_tokens password_reset_tokens[]
+    email_verification_tokens email_verification_tokens[]
+
+    @@map("users")
+}
+```
+
+#### `RefreshToken` schema
+```js
+model RefreshToken {
+    refresh_token_id @id @default(autoincrement())
+    token_hash Text
+    session_id Text @unique
+    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
+    user_id Int
+    expires_at DateTime
+    created_at DateTime @default(now())
+
+    @@map("refresh_tokens")
+}
+```
+
+#### `PasswordResetToken` schema
+```js
+model PasswordResetToken {
+    reset_token_id @id @default(autoincrement())
+    token_hash Text,
+    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
+    user_id Int
+    expires_at DateTime
+    created_at DateTime @default(now())
+
+    @@map("password_reset_tokens")
+}
+```
+
+#### `EmailVerificationToken` schema
+```js
+model EmailVerificationToken {
+    verification_token_id @id @default(autoincrement())
+    token_hash Text,
+    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
+    user_id Int
+    expires_at DateTime
+    created_at DateTime @default(now())
+
+    @@map("email_verification_tokens")
+}
+```
+
+#### `Role` enum
+```js
+enum Role {
+    ADMIN @map("admin")
+    USER @map("user")
+}
+```

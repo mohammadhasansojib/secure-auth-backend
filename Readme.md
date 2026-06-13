@@ -62,3 +62,78 @@ Relational Database is being used here called PostgreSQL.
 ```
 
 
+### SQL Queries
+
+<details>
+<summary>users table creation</summary>
+
+```sql
+create table users (
+    user_id serial not null,
+    username varchar(30) not null,
+    email varchar(254) unique not null,
+    age int not null,
+    password_hash varchar(255) not null,
+    is_verified boolean default false,
+    role varchar(10) not null,
+    created_at timestamp default now(),
+    updated_at timestamp default now(),
+
+    constraint pk_users_id primary key(user_id),
+    constraint check_users_age check (age > 10 and age < 100),
+    constraint enum_users_role check (role = 'admin' or role = 'user')
+);
+```
+</details>
+
+<details>
+<summary>refresh_tokens table creation</summary>
+
+```sql
+create table refresh_tokens (
+    refresh_token_id serial not null,
+    token_hash text not null,
+    session_id text unique not null,
+    user_id int not null,
+    expires_at timestamp not null,
+    created_at timestamp default now(),
+
+    constraint pk_refresh_tokens_id primary key(refresh_token_id),
+    constraint fk_users_id foreign key (user_id) references users(user_id) on delete cascade
+);
+```
+</details>
+
+<details>
+<summary>password_reset_tokens table creation</summary>
+
+```sql
+create table password_reset_tokens (
+    reset_token_id serial not null,
+    token_hash text not null,
+    user_id int not null,
+    expires_at timestamp not null,
+    created_at timestamp default now(),
+
+    constraint pk_password_reset_tokens_id primary key(reset_token_id),
+    constraint fk_users_id foreign key (user_id) references users(user_id) on delete cascade
+);
+```
+</details>
+
+<details>
+<summary>email_verification_tokens table creation</summary>
+
+```sql
+create table email_verification_tokens (
+    verification_token_id serial not null,
+    token_hash text not null,
+    user_id int not null,
+    expires_at timestamp not null,
+    created_at timestamp default now(),
+
+    constraint pk_email_verification_tokens_id primary key(verification_token_id),
+    constraint fk_users_id foreign key (user_id) references users(user_id) on delete cascade
+);
+```
+</details>

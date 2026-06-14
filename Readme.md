@@ -192,19 +192,19 @@ erDiagram
 #### `User` schema
 ```js
 model User {
-    user_id Int @id @default(autoincrement())
+    id Int @id @default(autoincrement()) @map("user_id")
     username @db.VarChar(30)
     email @db.VarChar(254) @unique
     age Int
-    password_hash Text
-    is_verified Boolean @default(false)
+    passwordHash Text @map("password_hash")
+    isVerified Boolean @default(false) @map("is_verified")
     role Role @default(USER)
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-    refresh_tokens refresh_tokens[]
-    password_reset_tokens password_reset_tokens[]
-    email_verification_tokens email_verification_tokens[]
+    refreshTokens RefreshToken[]
+    passwordResetTokens PasswordResetToken[]
+    emailVerificationTokens EmailVerificationToken[]
 
     @@map("users")
 }
@@ -213,13 +213,13 @@ model User {
 #### `RefreshToken` schema
 ```js
 model RefreshToken {
-    refresh_token_id @id @default(autoincrement())
-    token_hash Text
-    session_id Text @unique
-    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
-    user_id Int
-    expires_at DateTime
-    created_at DateTime @default(now())
+    id Int @id @default(autoincrement()) @map("refresh_token_id")
+    tokenHash Text @map("token_hash")
+    sessionId Text @unique @map("session_id")
+    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    userId Int @map("user_id")
+    expiresAt DateTime @map("expires_at")
+    createdAt DateTime @default(now()) @map("created_at")
 
     @@map("refresh_tokens")
 }
@@ -228,12 +228,12 @@ model RefreshToken {
 #### `PasswordResetToken` schema
 ```js
 model PasswordResetToken {
-    reset_token_id @id @default(autoincrement())
-    token_hash Text,
-    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
-    user_id Int
-    expires_at DateTime
-    created_at DateTime @default(now())
+    id Int @id @default(autoincrement()) @map("reset_token_id")
+    tokenHash Text @map("token_hash")
+    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    userId Int @map("user_id")
+    expiresAt DateTime @map("expires_at")
+    createdAt DateTime @default(now()) @map("created_at")
 
     @@map("password_reset_tokens")
 }
@@ -242,12 +242,12 @@ model PasswordResetToken {
 #### `EmailVerificationToken` schema
 ```js
 model EmailVerificationToken {
-    verification_token_id @id @default(autoincrement())
-    token_hash Text,
-    user users @relation(field: [user_id], references: [user_id], onDelete: Casecade)
-    user_id Int
-    expires_at DateTime
-    created_at DateTime @default(now())
+    id Int @id @default(autoincrement()) @map("verification_token_id")
+    tokenHash Text @map("token_hash")
+    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    userId Int @map("user_id")
+    expiresAt DateTime @map("expires_at")
+    createdAt DateTime @default(now()) @map("created_at")
 
     @@map("email_verification_tokens")
 }

@@ -1,19 +1,9 @@
-import { prisma } from "../lib/prisma";
-
+import app from "./app.js";
 
 async function main() {
-    const user = await prisma.user.create({
-        data: {
-            username: "Sajib Hasan",
-            email: "sajib1@mail.com",
-            age: 18,
-            passwordHash: "12345678",
-        }
-    });
+    const port = process.env.PORT || 3000;
 
-    console.log("Created User: ", user);
+    app.listen(port, () => console.log(`Server running at port ${port}...`));
 }
 
-main()
-.then((data) => console.log(data))
-.catch((err) => console.log(err));
+main();

@@ -193,10 +193,10 @@ erDiagram
 ```js
 model User {
     id Int @id @default(autoincrement()) @map("user_id")
-    username @db.VarChar(30)
-    email @db.VarChar(254) @unique
+    username String @db.VarChar(30)
+    email String @db.VarChar(254) @unique
     age Int
-    passwordHash Text @map("password_hash")
+    passwordHash String @map("password_hash")
     isVerified Boolean @default(false) @map("is_verified")
     role Role @default(USER)
     createdAt DateTime @default(now()) @map("created_at")
@@ -214,9 +214,9 @@ model User {
 ```js
 model RefreshToken {
     id Int @id @default(autoincrement()) @map("refresh_token_id")
-    tokenHash Text @map("token_hash")
-    sessionId Text @unique @map("session_id")
-    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    tokenHash String @map("token_hash")
+    sessionId String @unique @map("session_id")
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId Int @map("user_id")
     expiresAt DateTime @map("expires_at")
     createdAt DateTime @default(now()) @map("created_at")
@@ -229,8 +229,8 @@ model RefreshToken {
 ```js
 model PasswordResetToken {
     id Int @id @default(autoincrement()) @map("reset_token_id")
-    tokenHash Text @map("token_hash")
-    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    tokenHash String @map("token_hash")
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId Int @map("user_id")
     expiresAt DateTime @map("expires_at")
     createdAt DateTime @default(now()) @map("created_at")
@@ -243,8 +243,8 @@ model PasswordResetToken {
 ```js
 model EmailVerificationToken {
     id Int @id @default(autoincrement()) @map("verification_token_id")
-    tokenHash Text @map("token_hash")
-    user User @relation(field: [userId], references: [id], onDelete: Cascade)
+    tokenHash String @map("token_hash")
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId Int @map("user_id")
     expiresAt DateTime @map("expires_at")
     createdAt DateTime @default(now()) @map("created_at")

@@ -20,5 +20,8 @@ Auth-Backend/
     ├── repositories/
     │   └── user.repository.ts
     ├── utils
-    └── middleware
+    ├── middleware/
+    │   └── errorHandler.ts
+    └── types/
+        └── errorType.ts
 ```

@@ -6,3 +6,4 @@ dist
 
 message.txt
 /generated/prisma
+/src/generated/prisma

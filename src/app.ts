@@ -1,5 +1,6 @@
 import express from "express"
 import type { NextFunction, Request, Response } from "express"
+import userRoute from './routes/user.route.js'
 
 
 const app = express();
@@ -8,6 +9,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.text());
+
+// user's routes
+app.use('/api', userRoute);
 
 // routes
 app.get('/', (req: Request, res: Response) => {

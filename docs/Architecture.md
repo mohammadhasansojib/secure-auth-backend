@@ -25,3 +25,14 @@ Auth-Backend/
     └── types/
         └── errorType.ts
 ```
+
+### API Endpoints
+
+- `POST - /api/auth/register`
+- `POST - /api/auth/login`
+- `POST - /api/auth/refresh`
+- `GET - /api/users/me`
+- `PATCH - /api/users/me`
+- `POST - /api/auth/logout?all-device=true/false`
+- `POST - /api/auth/forget-password`
+- `POST - /api/auth/reset-password?token=______`

@@ -37,3 +37,35 @@ model Post {
   updatedAt DateTime @updatedAt
 }
 ```
+
+
+## Global Error handling
+
+### express error handling in v4
+- express(v4) can catch errors inside sync function.
+
+  example:
+  ```ts
+  app.get('/error', (req: Request, res: Response) => {
+      throw new Error("own created error in sync function!!")
+  })
+  ```
+  for this error server will not crash. Because this error is inside sync function and express can catch that.
+
+- but async error can't be catch explicity by express in v4
+
+  example:
+  ```ts
+  app.get('/error', async (req: Request, res: Response) => {
+      throw new Error("own created error in async function!!")
+  })
+  ```
+  for this error server will crash. Becasue express(v4) can not catch this explicitly.
+
+so to catch async function error in express v4, we have to use try/catch.
+
+### express error handling in v5
+express(v5) can catch both sync and async error. But to customize the error we can use try/catch.
+
+
+

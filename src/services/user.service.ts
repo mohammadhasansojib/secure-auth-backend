@@ -74,7 +74,102 @@ const createUser = async (
     return removePassword(user);
 }
 
+const validateUser = async (
+    email: string,
+    password: string,
+    rememberMe: boolean = false,
+) => {
+    // 1. email validation
+    const EmailSchema = z.object({
+        email: z.email("Invalid email address")
+        .min(1, "email is required")
+        .trim()
+    });
+    const validEmail = EmailSchema.safeParse({
+        email,
+    });
+
+
+    // email validation error case
+    if (!validEmail.success) {
+        logger.error("invalid email address", formatZodError(validEmail.error));
+        throw new BadRequestError("invalid email address", formatZodError(validEmail.error));
+    }
+    logger.info("email validation successful for login", {email: validEmail.data.email});
+    
+    // 2. fetch user by email
+    const user = await userRepo.getUserByEmail(validEmail.data.email);
+    // user not found case
+    if (user === null || !user) {
+        logger.error("user not found for login", {
+            email: validEmail.data.email,
+        });
+        throw new NotFoundError("user not found");
+    }
+
+    // 3. password matching
+    const isPasswordMatched = await bcrypt.compare(password, user.passwordHash);
+    // password mismatch case
+    if (!isPasswordMatched) {
+        logger.error("password mismatched for login", {
+            email: validEmail.data.email,
+        });
+        throw new AuthorizationError("invalid password");
+    }
+    logger.info("password matched for login", {
+        email: validEmail.data.email,
+    });
+
+    // 4. access token generation
+    const accessToken = getAccessToken(
+        user.id,
+        "session_id_here",
+        user.email
+    );
+
+    // return data
+    if (rememberMe) {
+        return {
+            accessToken,
+            user_id: user.id,
+            refreshToken: getRefreshToken(
+                user.id,
+                "session_id_here",
+                user.email
+            ),
+        }
+    }
+    
+    return {
+        accessToken,
+        user_id: user.id,
+    };
+}
+
+const saveRefreshToken = async (
+    token: string,
+    sessionId: string,
+    userId: number,
+) => {
+    const tokenHash = await bcrypt.hash(token, 10);
+    const expireDate = addDays(
+        new Date(),
+        7,
+    );
+
+    const userSessionInfo = await userRepo.storeRefreshTokenIntoDB({
+        tokenHash,
+        sessionId,
+        userId,
+        expiresAt: expireDate,
+    });
+
+    return userSessionInfo;
+}
+
 
 export default {
     createUser,
+    validateUser,
+    saveRefreshToken,
 }

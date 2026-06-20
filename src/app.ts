@@ -1,7 +1,8 @@
 import express from "express"
 import type { NextFunction, Request, Response } from "express"
 import userRoute from './routes/user.route.js'
-
+import cookieParser from "cookie-parser"
+import { env } from "process"
 
 const app = express();
 
@@ -9,6 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.text());
+
+// cookie parser middleware
+app.use(cookieParser(env.COOKIE_SECRET as string));
 
 // user's routes
 app.use('/api', userRoute);

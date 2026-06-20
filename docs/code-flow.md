@@ -14,15 +14,15 @@
     }
     ```
 - Flow
-    - controller get data from req.body
+    - collect data from req.body
     - validate email format
     - validate password strongness
     - validate name character length(3-30)
-    - check if email already exists
+    - generate hash password
     - create user
     - return response
 - Test Cases
-    - valid email
+    - valid and unique email
     - strong password
     - correct name length
 - Error Cases
@@ -35,7 +35,9 @@
     {
         success: true,
         message: "registration successfully completed",
-        user: {...},
+        data: {
+            user: {...}
+        },
     }
     ```
 
@@ -46,13 +48,13 @@
     {
         email: string,
         password: string,
-        rememberMe: false,
+        rememberMe: boolean,
     }
     ```
 - Flow
-    - controller get data from req.body
+    - collect data from req.body
     - validate email format
-    - check email exists or not
+    - check user existance by email
     - match password
     - generate access token, refresh token and session id
     - set refresh token and session id in cookie
@@ -71,7 +73,9 @@
     {
         success: true,
         message: "login successful",
-        accessToken: "...",
+        data: {
+            accessToken: "...",
+        },
     }
     ```
 

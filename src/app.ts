@@ -31,6 +31,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         success: false,
         message: err.message || "Something went wrong!",
         code: err.code || "INTERNAL_SERVER_ERROR",
+        data: err.error,
     })
 })
 

@@ -30,6 +30,51 @@ const register = async (req: Request, res: Response) => {
 }
 
 const login = async (req: Request, res: Response) => {
+    const {email, password, rememberMe} = req.body;
+
+    // user validation
+    const validateUser = await userService.validateUser(
+        email,
+        password,
+        rememberMe,
+    );
+
+    if (rememberMe) {
+        // session id generation
+        const sessionId = crypto.randomUUID();
+
+        // cookie setting
+        res.cookie("sid", sessionId, {
+            ...cookieConfig as CookieConfig,
+        });
+        res.cookie("uid", validateUser.user_id, {
+            ...cookieConfig as CookieConfig,
+        });
+        res.cookie("refresh_token", validateUser.refreshToken, {
+            ...cookieConfig as CookieConfig,
+            signed: true,
+        })
+
+        // save refresh token
+        await userService.saveRefreshToken(
+            validateUser.refreshToken as string,
+            sessionId,
+            validateUser.user_id,
+        );
+    }
+    
+
+    logger.info("user login successful", {
+        userId: validateUser.user_id,
+    })
+    // response
+    res.json({
+        success: true,
+        message: "login successful",
+        data: {
+            accessToken: validateUser.accessToken,
+        },
+    })
 }
 
 const refresh = async (req: Request, res: Response) => {
